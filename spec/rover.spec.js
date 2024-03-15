@@ -46,7 +46,19 @@ test ("responds correctly to the status check command",function(){
   expect(response.results[0].roverStatus.position).toBe(10)
 })
 
-test ("responds correctly to the mode change command", function(){
+test ("responds correctly to the mode change command", () => {
+  const commands = [new Command("MODE_CHANGE", "LOW_POWER")];
+  const message = new Message("Test mode change command", commands);
+
+  const rover = new Rover(10);
+  const response = rover.receiveMessage(message);
+
+  expect(response.results[0].completed).toBe(true);
+
+  expect(rover.mode).toBe("LOW_POWER");
+});
+
+test ("responds with a false completed value when attempting to move in LOW_POWER mode", function(){
   let commands = [new Command('MOVE', 'LOW_POWER')];
   let message = new Message("Message", commands);
   let rover = new Rover(156)
